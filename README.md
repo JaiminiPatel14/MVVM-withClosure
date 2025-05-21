@@ -21,8 +21,7 @@ A clean and scalable iOS application architecture using MVVM pattern with closur
 
 ## Requirements
 
-- iOS 13.0+
-- Xcode 13.0+
+- iOS 15.6+
 - Swift 5.0+
 
 ## Dependencies
