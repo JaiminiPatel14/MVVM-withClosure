@@ -40,9 +40,17 @@ class ProductListVC: UIViewController {
                     self?.tblProduct.reloadData()
                 }
             case .showError(let error):
-                print("Error: \(error.localizedDescription)")
-            default:
-                break
+                DispatchQueue.main.async { [weak self] in
+                    self?.showAlert(message: error.localizedDescription)
+                }
+            case .loading:
+                DispatchQueue.main.async { [weak self] in
+                    self?.showLoading(message: "Loading products...")
+                }
+            case .stopLoading:
+                DispatchQueue.main.async { [weak self] in
+                    self?.hideLoading()
+                }
             }
         }
     }
