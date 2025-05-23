@@ -85,3 +85,12 @@ extension ProductListVC: UITableViewDelegate, UITableViewDataSource{
         return 0.01
     }
 }
+
+// MARK: - UI Helpers
+extension ProductListVC {
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+}

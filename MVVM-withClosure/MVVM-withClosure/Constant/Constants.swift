@@ -1,19 +1,6 @@
 import Foundation
 
 enum Constants {
-    // MARK: - API
-    enum API {
-        static let baseURL = "https://fakestoreapi.com/"
-        static let timeout: TimeInterval = 30
-    }
-    
-    // MARK: - UI
-    enum UI {
-        static let cornerRadius: CGFloat = 16
-        static let defaultPadding: CGFloat = 16
-        static let animationDuration: TimeInterval = 0.3
-    }
-    
     // MARK: - Cell Identifiers
     enum CellIdentifiers {
         static let productCell = "ProductTVC"

@@ -1,7 +1,7 @@
 import Foundation
 
-// MARK: - Network Errors
-enum NetworkError: LocalizedError {
+// MARK: - Network Service Error
+enum NetworkServiceError: Error {
     case invalidURL
     case invalidResponse
     case decodingFailed(String)
@@ -10,20 +10,35 @@ enum NetworkError: LocalizedError {
     case unauthorized
     case custom(String)
     
-    var errorDescription: String? {
+    var userFacingTitle: String {
+        switch self {
+        case .invalidURL, .invalidResponse, .decodingFailed:
+            return "Connection Error"
+        case .serverError:
+            return "Server Error"
+        case .noData:
+            return "Data Error"
+        case .unauthorized:
+            return "Authentication Error"
+        case .custom:
+            return "Error"
+        }
+    }
+    
+    var userFacingMessage: String {
         switch self {
         case .invalidURL:
-            return "Invalid URL"
+            return "The server address is invalid. Please try again later."
         case .invalidResponse:
-            return "Invalid Response"
+            return "Received an invalid response from the server. Please try again."
         case .decodingFailed(let message):
-            return "Decoding failed: \(message)"
+            return "Unable to process server response: \(message)"
         case .serverError(let code):
-            return "Server error with code: \(code)"
+            return "Server error (Code: \(code)). Please try again later."
         case .noData:
-            return "No data received"
+            return "No data received from the server. Please try again."
         case .unauthorized:
-            return "Unauthorized access"
+            return "Your session has expired. Please log in again."
         case .custom(let message):
             return message
         }
@@ -43,7 +58,7 @@ final class NetworkService: NetworkServiceProtocol {
     
     func request<T: Decodable>(model: T.Type,_ endpoint: EndPointType) async throws -> T {
         guard let url = endpoint.url else {
-            throw NetworkError.invalidURL
+            throw NetworkServiceError.invalidURL
         }
         
         var request = URLRequest(url: url)
@@ -56,30 +71,27 @@ final class NetworkService: NetworkServiceProtocol {
         if let parameters = endpoint.parameters {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
         }
-        
         do {
             let (data, response) = try await URLSession.shared.data(for: request)
-            
             guard let httpResponse = response as? HTTPURLResponse else {
-                throw NetworkError.invalidResponse
+                throw NetworkServiceError.invalidResponse
             }
-            
             switch httpResponse.statusCode {
             case 200...299:
                 do {
                     return try JSONDecoder().decode(T.self, from: data)
                 } catch {
-                    throw NetworkError.decodingFailed(error.localizedDescription)
+                    throw NetworkServiceError.decodingFailed(error.localizedDescription)
                 }
             case 401:
-                throw NetworkError.unauthorized
+                throw NetworkServiceError.unauthorized
             default:
-                throw NetworkError.serverError(httpResponse.statusCode)
+                throw NetworkServiceError.serverError(httpResponse.statusCode)
             }
-        } catch let error as NetworkError {
+        } catch let error as NetworkServiceError {
             throw error
         } catch {
-            throw NetworkError.custom(error.localizedDescription)
+            throw NetworkServiceError.custom(error.localizedDescription)
         }
     }
 } 

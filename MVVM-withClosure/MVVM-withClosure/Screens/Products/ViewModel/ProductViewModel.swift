@@ -35,7 +35,11 @@ final class ProductViewModel: ProductViewModelProtocol {
                 }
             } catch {
                 await MainActor.run {
-                    self.eventHandler?(.showError(error))
+                    if let networkError = error as? NetworkServiceError {
+                        self.eventHandler?(.showError(networkError))
+                    } else {
+                        self.eventHandler?(.showError(.custom(error.localizedDescription)))
+                    }
                 }
             }
         }
@@ -50,7 +54,7 @@ final class ProductViewModel: ProductViewModelProtocol {
 // MARK: - Event Types
 extension ProductViewModel {
     enum Event {
-        case showError(Error)
+        case showError(NetworkServiceError)
         case loading
         case stopLoading
         case dataLoaded

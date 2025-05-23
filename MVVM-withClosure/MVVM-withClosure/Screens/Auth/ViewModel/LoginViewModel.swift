@@ -8,6 +8,7 @@
 import Foundation
 
 final class LoginViewModel: AuthViewModelProtocol {
+    
     // MARK: - Properties
     private let networkService: NetworkServiceProtocol
     private let validationService: ValidationServiceProtocol
@@ -24,18 +25,7 @@ final class LoginViewModel: AuthViewModelProtocol {
     // MARK: - Public Methods
     func login(username: String, password: String) {
         // Validate inputs
-//        guard validationService.validateUsername(username) else {
-//            eventHandler?(.validationError("Invalid username format"))
-//            return
-//        }
-//        
-//        guard validationService.validatePassword(password) else {
-//            eventHandler?(.validationError("Password must be at least 8 characters with 1 uppercase, 1 lowercase, and 1 number"))
-//            return
-//        }
-        
         eventHandler?(.loading)
-        
         Task {
             do {
                 let loginAPI = try await networkService.request(model: LoginModel.self, EndPointItem.login(username: username, password: password))
@@ -47,7 +37,11 @@ final class LoginViewModel: AuthViewModelProtocol {
             } catch {
                 await MainActor.run {
                     self.eventHandler?(.stopLoading)
-                    self.eventHandler?(.showError(error))
+                    if let networkError = error as? NetworkServiceError {
+                        self.eventHandler?(.showError(networkError))
+                    } else {
+                        self.eventHandler?(.showError(.custom(error.localizedDescription)))
+                    }
                 }
             }
         }
@@ -57,7 +51,7 @@ final class LoginViewModel: AuthViewModelProtocol {
 // MARK: - Event Types
 extension LoginViewModel {
     enum Event {
-        case showError(Error)
+        case showError(NetworkServiceError)
         case validationError(String)
         case loading
         case stopLoading

@@ -15,13 +15,11 @@ class LoginVC: UIViewController {
     
     // MARK: - Properties
     private let viewModel: LoginViewModel
-    private let errorHandler: ErrorHandlingServiceProtocol
     weak var coordinator: AuthCoordinator?
 
     // MARK: - Initialization
     required init?(coder: NSCoder) {
         self.viewModel = LoginViewModel()
-        self.errorHandler = ErrorHandlingService.shared
         super.init(coder: coder)
     }
     
@@ -56,12 +54,10 @@ class LoginVC: UIViewController {
                 self.coordinator?.showProductList()
             case .showError(let error):
                 self.hideLoading()
-                let appError = self.errorHandler.handle(error)
-                self.showAlert(message: appError.localizedDescription)
+                self.showError(error)
             case .validationError(let message):
                 self.hideLoading()
-                let appError = self.errorHandler.handleValidationError(message)
-                self.showAlert(message: appError.localizedDescription)
+                self.showError(.custom(message))
             case .logout:
                 self.hideLoading()
                 self.coordinator?.logout()
@@ -73,8 +69,7 @@ class LoginVC: UIViewController {
     @IBAction func btnLoginAction(_ sender: Any) {
         guard let username = lblUsername.text, !username.isEmpty,
               let password = lblPass.text, !password.isEmpty else {
-            let error = errorHandler.handleValidationError(Constants.ErrorMessages.invalidCredentials)
-            showAlert(message: error.localizedDescription)
+            self.showError(.custom(Constants.ErrorMessages.invalidCredentials))
             return
         }
         viewModel.login(username: username, password: password)
@@ -82,14 +77,5 @@ class LoginVC: UIViewController {
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
-    }
-}
-
-// MARK: - UI Helpers
-extension LoginVC {
-    private func showAlert(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
     }
 }
