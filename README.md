@@ -24,4 +24,4 @@ A simple iOS app demonstrating MVVM architecture using closures for communicatio
 ## 👨‍💻 Author
 
 Jaimini Patel
-- GitHub: [@JaiminiPatel14](https://github.com/JaiminiPatel14)
+[@JaiminiPatel14](https://github.com/JaiminiPatel14)
