@@ -2,6 +2,12 @@
 
 A simple iOS app demonstrating MVVM architecture using closures for communication between layers.
 
+## Architecture
+- **MVVM**: ViewModels handle business logic and communicate with Views using closures
+- **Network Layer**: Async/await based network service with error handling
+- **Coordinators**: Handle navigation flow
+- **Closures**: Used for communication between layers instead of delegates
+
 ## Features
 - Login authentication
 - Product listing
@@ -9,28 +15,13 @@ A simple iOS app demonstrating MVVM architecture using closures for communicatio
 - Network layer with async/await
 - Coordinator pattern for navigation
 
-## Architecture
-- **MVVM**: ViewModels handle business logic and communicate with Views using closures
-- **Network Layer**: Async/await based network service with error handling
-- **Coordinators**: Handle navigation flow
-- **Closures**: Used for communication between layers instead of delegates
+## Requirements
 
-## Project Structure
-```
-MVVM-withClosure/
-├── Core/
-│   ├── Network/
-│   └── Navigation/
-├── Screens/
-│   ├── Auth/
-│   └── Products/
-├── Common/
-│   ├── Protocols/
-│   └── Views/
-└── Utility/
-```
+- iOS 15.0+
+- Xcode 13.0+
+- Swift 5.0+
 
-## Installation
-1. Clone the repository
-2. Open `MVVM-withClosure.xcodeproj`
-3. Build and run 
+## 👨‍💻 Author
+
+Jaimini Patel
+- GitHub: [@JaiminiPatel14](https://github.com/JaiminiPatel14)
