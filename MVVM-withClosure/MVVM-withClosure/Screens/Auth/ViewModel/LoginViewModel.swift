@@ -7,6 +7,10 @@
 
 import Foundation
 
+// Protocol for authentication related ViewModels
+protocol AuthViewModelProtocol: ViewModelProtocol {
+    func login(username: String, password: String)
+}
 final class LoginViewModel: AuthViewModelProtocol {
     
     // MARK: - Properties

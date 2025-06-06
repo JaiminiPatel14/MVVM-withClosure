@@ -7,6 +7,11 @@
 
 import Foundation
 
+// Protocol for product related ViewModels
+protocol ProductViewModelProtocol: ViewModelProtocol {
+    func fetchProducts()
+}
+
 final class ProductViewModel: ProductViewModelProtocol {
     // MARK: - Properties
     private let networkService: NetworkServiceProtocol
